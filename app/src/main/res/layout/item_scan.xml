@@ -3,26 +3,57 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:background="@color/super_light_blue"
+    android:padding="16dp"
+    android:layout_margin="8dp"
+    android:elevation="2dp"
+    android:foreground="?android:attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/tvData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="@color/dark_blue"
+        android:layout_marginBottom="4dp" />
 
-    <TextView
-        android:id="@+id/tvSymbology"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp" />
+        android:orientation="horizontal"
+        android:layout_marginBottom="4dp">
 
-    <TextView
-        android:id="@+id/tvDate"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Тип: "
+            android:textSize="14sp"
+            android:textColor="@color/text_gray" />
+
+        <TextView
+            android:id="@+id/tvSymbology"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/blue" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textColor="@android:color/darker_gray" />
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/text_gray" />
+
+    </LinearLayout>
 
 </LinearLayout>
