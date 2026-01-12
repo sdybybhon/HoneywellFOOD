@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.honeywellfood.R
 import com.example.honeywellfood.presentation.adapter.HistoryAdapter
 import com.example.honeywellfood.presentation.viewmodel.ScanViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -49,7 +50,7 @@ class HistoryFragment : Fragment() {
     }
 
     private fun showClearHistoryDialog() {
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
             .setTitle("Очистить историю")
             .setMessage("Вы уверены, что хотите удалить всю историю сканирования?")
             .setPositiveButton("Очистить") { _, _ ->

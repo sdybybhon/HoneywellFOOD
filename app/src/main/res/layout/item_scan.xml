@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/super_light_blue"
+    android:background="@color/background_light"
     android:padding="16dp"
     android:layout_margin="8dp"
-    android:elevation="2dp"
+    android:elevation="4dp"
     android:foreground="?android:attr/selectableItemBackground">
 
     <TextView
@@ -15,8 +15,8 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="@color/dark_blue"
-        android:layout_marginBottom="4dp" />
+        android:textColor="@color/text_white"
+        android:layout_marginBottom="8dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="@color/dark_blue" />
+            android:textColor="@color/light_purple" />
 
     </LinearLayout>
 

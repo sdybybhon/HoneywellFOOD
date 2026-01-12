@@ -3,17 +3,30 @@
     <style name="Base.Theme.HoneywellFOOD" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="colorPrimary">@color/blue</item>
-        <item name="colorPrimaryVariant">@color/dark_blue</item>
+        <item name="colorPrimary">@color/purple</item>
+        <item name="colorPrimaryVariant">@color/dark_purple</item>
         <item name="colorOnPrimary">@color/text_white</item>
 
-        <item name="colorSecondary">@color/light_blue</item>
-        <item name="colorSecondaryVariant">@color/dark_blue</item>
+        <item name="colorSecondary">@color/accent_black</item>
+        <item name="colorSecondaryVariant">@color/dark_gray</item>
         <item name="colorOnSecondary">@color/text_white</item>
 
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
 
-        <item name="android:windowBackground">@color/background_blue</item>
+        <item name="android:windowBackground">@color/background_dark</item>
+
+        <item name="cardBackgroundColor">@color/background_medium</item>
+        <item name="cardForegroundColor">@color/text_white</item>
+
+        <item name="android:textColorPrimary">@color/text_white</item>
+        <item name="android:textColorSecondary">@color/text_gray</item>
+    </style>
+    <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="android:textColorPrimary">@color/text_white</item>
+        <item name="android:textColorSecondary">@color/text_gray</item>
+        <item name="android:background">@color/background_medium</item>
+        <item name="colorSurface">@color/background_medium</item>
+        <item name="colorOnSurface">@color/text_white</item>
     </style>
 
     <style name="Theme.HoneywellFOOD" parent="Base.Theme.HoneywellFOOD" />

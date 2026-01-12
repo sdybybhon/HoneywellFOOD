@@ -3,12 +3,25 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="light_blue">#239AFB</color>
-    <color name="dark_blue">#1677D5</color>
-    <color name="super_light_blue">#B1B2D5F4</color>
-    <color name="blue">#03A9F4</color>
-    <color name="background_blue">#E3F2FD</color>
+    <color name="dark_gray">#333333</color>
+    <color name="medium_gray">#555555</color>
+    <color name="light_gray">#888888</color>
+    <color name="very_light_gray">#F0F0F0</color>
+
+
+    <color name="dark_purple">#6A0DAD</color>
+    <color name="purple">#8A2BE2</color>
+    <color name="light_purple">#9370DB</color>
+    <color name="very_light_purple">#E6E6FA</color>
+    <color name="purple_accent">#9C27B0</color>
+
+    <color name="accent_dark">#1A1A1A</color>
+    <color name="accent_black">#212121</color>
     <color name="text_white">#FFFFFF</color>
-    <color name="text_dark">#000000</color>
-    <color name="text_gray">#717171</color>
+    <color name="text_light">#EEEEEE</color>
+    <color name="text_gray">#AAAAAA</color>
+
+    <color name="background_dark">#121212</color>
+    <color name="background_medium">#1E1E1E</color>
+    <color name="background_light">#2D2D2D</color>
 </resources>
