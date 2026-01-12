@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -36,10 +37,25 @@ class HistoryFragment : Fragment() {
         adapter = HistoryAdapter()
         recyclerView.adapter = adapter
 
+        view.findViewById<View>(R.id.btnClearHistory).setOnClickListener {
+            showClearHistoryDialog()
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.scanHistory.collect { scans ->
                 adapter.submitList(scans)
             }
         }
+    }
+
+    private fun showClearHistoryDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Очистить историю")
+            .setMessage("Вы уверены, что хотите удалить всю историю сканирования?")
+            .setPositiveButton("Очистить") { _, _ ->
+                viewModel.clearHistory()
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
     }
 }
