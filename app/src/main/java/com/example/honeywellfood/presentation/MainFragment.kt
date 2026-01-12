@@ -33,6 +33,12 @@ class MainFragment : Fragment() {
                 tvScanResult.text = "Скан: $data\nТип: $symbology"
 
                 viewModel.addScan(data, symbology)
+
+                if (viewModel.isScanning.value == true) {
+                    btnToggleScan.postDelayed({
+                        startScanning()
+                    }, 1500)
+                }
             }
         }
     }
@@ -57,7 +63,9 @@ class MainFragment : Fragment() {
             btnToggleScan.text = if (isScanning) "Остановить сканирование" else "Начать сканирование"
             if (isScanning) {
                 claimScanner()
+                startScanning()
             } else {
+                stopScanning()
                 releaseScanner()
             }
         })
@@ -84,7 +92,10 @@ class MainFragment : Fragment() {
         super.onPause()
         LocalBroadcastManager.getInstance(requireContext())
             .unregisterReceiver(localReceiver)
-        releaseScanner()
+        if (viewModel.isScanning.value == true) {
+            stopScanning()
+            releaseScanner()
+        }
     }
 
     private fun claimScanner() {
@@ -105,6 +116,20 @@ class MainFragment : Fragment() {
         requireContext().sendBroadcast(intent)
     }
 
+    private fun startScanning() {
+        val intent = Intent(ACTION_CONTROL_SCANNER).apply {
+            putExtra(EXTRA_SCAN, true)
+        }
+        requireContext().sendBroadcast(intent)
+    }
+
+    private fun stopScanning() {
+        val intent = Intent(ACTION_CONTROL_SCANNER).apply {
+            putExtra(EXTRA_SCAN, false)
+        }
+        requireContext().sendBroadcast(intent)
+    }
+
     private fun getSymbologyName(codeId: String): String {
         return when (codeId) {
             "s" -> "QR Code"
@@ -122,8 +147,10 @@ class MainFragment : Fragment() {
     companion object {
         private const val ACTION_CLAIM_SCANNER = "com.honeywell.aidc.action.ACTION_CLAIM_SCANNER"
         private const val ACTION_RELEASE_SCANNER = "com.honeywell.aidc.action.ACTION_RELEASE_SCANNER"
+        private const val ACTION_CONTROL_SCANNER = "com.honeywell.aidc.action.ACTION_CONTROL_SCANNER"
         private const val EXTRA_SCANNER = "com.honeywell.aidc.extra.EXTRA_SCANNER"
         private const val EXTRA_PROFILE = "com.honeywell.aidc.extra.EXTRA_PROFILE"
         private const val EXTRA_PROPERTIES = "com.honeywell.aidc.extra.EXTRA_PROPERTIES"
+        private const val EXTRA_SCAN = "com.honeywell.aidc.extra.EXTRA_SCAN"
     }
 }
