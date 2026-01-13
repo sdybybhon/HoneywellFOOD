@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import com.example.honeywellfood.R
 import com.example.honeywellfood.databinding.DialogProductInfoBinding
 import java.util.*
 
@@ -69,14 +70,21 @@ class ProductInfoDialogFragment : DialogFragment() {
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val datePicker = DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
-            selectedExpiryDate = Calendar.getInstance().apply {
-                set(selectedYear, selectedMonth, selectedDay)
-            }
+        val datePicker = DatePickerDialog(
+            requireContext(),
+            R.style.DatePickerTheme,
+            { _, selectedYear, selectedMonth, selectedDay ->
+                selectedExpiryDate = Calendar.getInstance().apply {
+                    set(selectedYear, selectedMonth, selectedDay)
+                }
 
-            val formattedDate = String.format("%02d.%02d.%d", selectedDay, selectedMonth + 1, selectedYear)
-            binding.tvSelectedDate.text = formattedDate
-        }, year, month, day)
+                val formattedDate = String.format("%02d.%02d.%d", selectedDay, selectedMonth + 1, selectedYear)
+                binding.tvSelectedDate.text = formattedDate
+            },
+            year,
+            month,
+            day
+        )
 
         datePicker.datePicker.minDate = System.currentTimeMillis()
         datePicker.show()
