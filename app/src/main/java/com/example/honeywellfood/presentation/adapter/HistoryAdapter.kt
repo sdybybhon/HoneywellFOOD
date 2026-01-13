@@ -25,10 +25,21 @@ class HistoryAdapter : ListAdapter<ScanItem, HistoryAdapter.ScanViewHolder>(Diff
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ScanItem) {
-            binding.tvData.text = item.data
-            binding.tvSymbology.text = item.symbology
+            binding.tvProductName.text = item.productName ?: "Неизвестный продукт"
+
+            binding.tvBarcode.text = "Штрихкод: ${item.barcode}"
+
+            item.expiryDate?.let {
+                binding.tvExpiryDate.text = SimpleDateFormat("Годен до: dd.MM.yyyy", Locale.getDefault())
+                    .format(Date(it))
+            } ?: run {
+                binding.tvExpiryDate.text = "Срок годности не указан"
+            }
+
             binding.tvDate.text = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
                 .format(Date(item.timestamp))
+
+            binding.tvSymbology.text = "Тип: ${item.symbology}"
         }
     }
 

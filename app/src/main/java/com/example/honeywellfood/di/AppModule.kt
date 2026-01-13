@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.honeywellfood.data.local.ScanDatabase
 import com.example.honeywellfood.data.local.ScanDao
+import com.example.honeywellfood.data.network.FoodFactsApi
 import com.example.honeywellfood.data.repository.ScanRepository
 import dagger.Module
 import dagger.Provides
@@ -32,5 +33,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideScanRepository(scanDao: ScanDao) = ScanRepository(scanDao)
+    fun provideScanRepository(
+        scanDao: ScanDao,
+        foodFactsApi: FoodFactsApi
+    ) = ScanRepository(scanDao, foodFactsApi)
 }

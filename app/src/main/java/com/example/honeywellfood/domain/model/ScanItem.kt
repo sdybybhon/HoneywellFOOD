@@ -8,7 +8,9 @@ import java.util.Date
 data class ScanItem(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val data: String,
+    val barcode: String,
+    val productName: String? = null,
+    val expiryDate: Long? = null,
     val symbology: String,
     val timestamp: Long = Date().time
 )
