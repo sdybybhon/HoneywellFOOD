@@ -2,7 +2,10 @@ package com.example.honeywellfood.presentation
 
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.honeywellfood.R
@@ -32,36 +35,69 @@ class ProductInfoDialogFragment : DialogFragment() {
 
         binding.etProductName.setText(productName)
 
+        binding.etProductName.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                hideKeyboard()
+                binding.btnSave.requestFocus()
+                return@setOnEditorActionListener true
+            }
+            false
+        }
+
+        binding.root.setOnClickListener {
+            hideKeyboard()
+        }
+
         binding.btnPickDate.setOnClickListener {
+            hideKeyboard()
             showDatePicker()
         }
 
         binding.btnSave.setOnClickListener {
-            val productNameInput = binding.etProductName.text.toString().trim()
-            val expiryDate = selectedExpiryDate?.timeInMillis
-
-            if (productNameInput.isBlank()) {
-                Toast.makeText(requireContext(), "Введите название продукта", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            if (expiryDate == null) {
-                Toast.makeText(requireContext(), "Выберите срок годности", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            listener?.onSubmit(productNameInput, expiryDate, barcode)
-            dismiss()
+            hideKeyboard()
+            saveProduct(barcode)
         }
 
         binding.btnCancel.setOnClickListener {
+            hideKeyboard()
             dismiss()
         }
+
+        binding.etProductName.requestFocus()
 
         return Dialog(requireContext()).apply {
             setContentView(binding.root)
             window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+            window?.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         }
+    }
+
+    private fun hideKeyboard() {
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.etProductName.windowToken, 0)
+        binding.etProductName.clearFocus()
+    }
+
+    private fun saveProduct(barcode: String) {
+        val productNameInput = binding.etProductName.text.toString().trim()
+        val expiryDate = selectedExpiryDate?.timeInMillis
+
+        if (productNameInput.isBlank()) {
+            Toast.makeText(requireContext(), "Введите название продукта", Toast.LENGTH_SHORT).show()
+            binding.etProductName.requestFocus()
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(binding.etProductName, InputMethodManager.SHOW_IMPLICIT)
+            return
+        }
+
+        if (expiryDate == null) {
+            Toast.makeText(requireContext(), "Выберите срок годности", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        listener?.onSubmit(productNameInput, expiryDate, barcode)
+        dismiss()
     }
 
     private fun showDatePicker() {
