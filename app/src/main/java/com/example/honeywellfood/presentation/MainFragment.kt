@@ -60,7 +60,7 @@ class MainFragment : Fragment() {
                 lastScannedCodeId = codeId
 
                 tvScanResult.text = buildString {
-                    append("✅ Штрихкод отсканирован!\n\n")
+                    append("Штрихкод отсканирован!\n\n")
                     append("Штрихкод: $data\n")
                     append("Длина: ${data.length}\n")
                     append("Тип: $symbology\n")
@@ -206,9 +206,8 @@ class MainFragment : Fragment() {
         productDialog?.dismiss()
 
         productDialog = ProductInfoDialogFragment.newInstance(barcode, productName).apply {
-            setListener(object : ProductInfoDialogFragment.OnProductInfoSubmitListener {
-                override fun onSubmit(productName: String, expiryDate: Long, barcode: String) {
-
+            setListener(object : ProductInfoDialogFragment.OnDialogActionListener {
+                override fun onProductSaved(productName: String, expiryDate: Long, barcode: String) {
                     viewModel.addProductWithInfo(barcode, productName, expiryDate, symbology)
 
                     tvScanResult.text = buildString {
@@ -224,6 +223,15 @@ class MainFragment : Fragment() {
                         "Продукт добавлен в историю",
                         Toast.LENGTH_SHORT
                     ).show()
+                }
+
+                override fun onDialogCanceled() {
+                    tvScanResult.text = buildString {
+                        append("Добавление продукта отменено =(\n\n")
+                        append("Штрихкод: $barcode\n")
+                        append("Длина: ${barcode.length}\n")
+                        append("Тип: $symbology")
+                    }
                 }
             })
         }

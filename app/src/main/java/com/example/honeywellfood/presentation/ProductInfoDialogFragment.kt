@@ -3,6 +3,7 @@ package com.example.honeywellfood.presentation
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -14,16 +15,18 @@ import java.util.*
 
 class ProductInfoDialogFragment : DialogFragment() {
 
-    interface OnProductInfoSubmitListener {
-        fun onSubmit(productName: String, expiryDate: Long, barcode: String)
+    interface OnDialogActionListener {
+        fun onProductSaved(productName: String, expiryDate: Long, barcode: String)
+        fun onDialogCanceled()
     }
 
-    private var listener: OnProductInfoSubmitListener? = null
+    private var listener: OnDialogActionListener? = null
     private var _binding: DialogProductInfoBinding? = null
     private val binding get() = _binding!!
     private var selectedExpiryDate: Calendar? = null
+    private var wasSaved = false
 
-    fun setListener(listener: OnProductInfoSubmitListener) {
+    fun setListener(listener: OnDialogActionListener) {
         this.listener = listener
     }
 
@@ -60,7 +63,7 @@ class ProductInfoDialogFragment : DialogFragment() {
 
         binding.btnCancel.setOnClickListener {
             hideKeyboard()
-            dismiss()
+            dismissWithCancel()
         }
 
         binding.etProductName.requestFocus()
@@ -70,6 +73,18 @@ class ProductInfoDialogFragment : DialogFragment() {
             window?.setBackgroundDrawableResource(android.R.color.transparent)
 
             window?.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+        }
+    }
+
+    private fun dismissWithCancel() {
+        listener?.onDialogCanceled()
+        dismiss()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        if (!wasSaved) {
+            listener?.onDialogCanceled()
         }
     }
 
@@ -96,7 +111,8 @@ class ProductInfoDialogFragment : DialogFragment() {
             return
         }
 
-        listener?.onSubmit(productNameInput, expiryDate, barcode)
+        wasSaved = true
+        listener?.onProductSaved(productNameInput, expiryDate, barcode)
         dismiss()
     }
 
