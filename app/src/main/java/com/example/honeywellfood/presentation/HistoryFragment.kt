@@ -41,6 +41,10 @@ class HistoryFragment : Fragment() {
             showClearHistoryDialog()
         }
 
+        view.findViewById<View>(R.id.btnBack).setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.scanHistory.collect { scans ->
                 adapter.submitList(scans)
