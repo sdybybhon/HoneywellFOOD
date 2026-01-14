@@ -19,6 +19,10 @@ class ScanRepository @Inject constructor(
 
     suspend fun clearHistory() = scanDao.clearAll()
 
+    suspend fun deleteScan(scan: ScanItem) = scanDao.delete(scan)
+
+    suspend fun deleteScanById(id: Int) = scanDao.deleteById(id)
+
     suspend fun getProductNameFromBarcode(barcode: String): String? {
         productCache[barcode]?.let {
             Log.d("ScanRepository", "Cache hit for barcode: $barcode")

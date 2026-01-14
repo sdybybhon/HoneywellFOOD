@@ -10,7 +10,9 @@ import com.example.honeywellfood.domain.model.ScanItem
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HistoryAdapter : ListAdapter<ScanItem, HistoryAdapter.ScanViewHolder>(DiffCallback()) {
+class HistoryAdapter(
+    private val onDeleteClickListener: ((ScanItem) -> Unit)? = null
+) : ListAdapter<ScanItem, HistoryAdapter.ScanViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScanViewHolder {
         val binding = ItemScanBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -24,9 +26,17 @@ class HistoryAdapter : ListAdapter<ScanItem, HistoryAdapter.ScanViewHolder>(Diff
     inner class ScanViewHolder(private val binding: ItemScanBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        init {
+            binding.ivDelete.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onDeleteClickListener?.invoke(getItem(position))
+                }
+            }
+        }
+
         fun bind(item: ScanItem) {
             binding.tvProductName.text = item.productName ?: "Неизвестный продукт"
-
             binding.tvBarcode.text = "Штрихкод: ${item.barcode}"
 
             item.expiryDate?.let {

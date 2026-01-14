@@ -34,7 +34,11 @@ class HistoryFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.rvHistory)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        adapter = HistoryAdapter()
+
+        adapter = HistoryAdapter { scanItem ->
+            showDeleteItemDialog(scanItem)
+        }
+
         recyclerView.adapter = adapter
 
         view.findViewById<View>(R.id.btnClearHistory).setOnClickListener {
@@ -58,6 +62,17 @@ class HistoryFragment : Fragment() {
             .setMessage("Вы уверены, что хотите удалить всю историю сканирования?")
             .setPositiveButton("Очистить") { _, _ ->
                 viewModel.clearHistory()
+            }
+            .setNegativeButton("Отмена", null)
+            .show()
+    }
+
+    private fun showDeleteItemDialog(scanItem: com.example.honeywellfood.domain.model.ScanItem) {
+        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+            .setTitle("Удалить продукт")
+            .setMessage("Удалить \"${scanItem.productName ?: "Неизвестный продукт"}\"?")
+            .setPositiveButton("Удалить") { _, _ ->
+                viewModel.deleteScan(scanItem)
             }
             .setNegativeButton("Отмена", null)
             .show()

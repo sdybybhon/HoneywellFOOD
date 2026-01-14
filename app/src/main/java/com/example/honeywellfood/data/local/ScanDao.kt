@@ -14,4 +14,10 @@ interface ScanDao {
 
     @Query("DELETE FROM scan_history")
     suspend fun clearAll()
+
+    @Delete
+    suspend fun delete(scan: ScanItem)
+
+    @Query("DELETE FROM scan_history WHERE id = :id")
+    suspend fun deleteById(id: Int)
 }

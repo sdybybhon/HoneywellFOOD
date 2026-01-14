@@ -74,4 +74,16 @@ class ScanViewModel @Inject constructor(
             repository.clearHistory()
         }
     }
+
+    fun deleteScan(scan: ScanItem) {
+        viewModelScope.launch {
+            repository.deleteScan(scan)
+        }
+    }
+
+    fun deleteScanById(id: Int) {
+        viewModelScope.launch {
+            repository.deleteScanById(id)
+        }
+    }
 }
