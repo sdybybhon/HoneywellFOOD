@@ -40,7 +40,6 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Добавляем Spinner для категории -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,12 +62,10 @@
             android:layout_height="48dp"
             android:background="@color/background_light"
             android:popupBackground="@color/background_dark"
-            android:textColor="@color/text_white"
-            style="@style/SpinnerStyle" />
+            android:textColor="@color/text_white" />
 
     </LinearLayout>
 
-    <!-- Существующий блок с датой -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

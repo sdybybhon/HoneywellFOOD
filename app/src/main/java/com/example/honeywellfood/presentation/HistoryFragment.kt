@@ -4,6 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -20,7 +25,10 @@ import kotlinx.coroutines.launch
 class HistoryFragment : Fragment() {
     private val viewModel: ScanViewModel by viewModels()
     private lateinit var recyclerView: RecyclerView
+    private lateinit var spinnerCategoryFilter: Spinner
     private lateinit var adapter: HistoryAdapter
+
+    private var selectedCategory: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +41,8 @@ class HistoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerView = view.findViewById(R.id.rvHistory)
+        spinnerCategoryFilter = view.findViewById(R.id.spinnerCategoryFilter)
+
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         adapter = HistoryAdapter { scanItem ->
@@ -49,9 +59,66 @@ class HistoryFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
 
+        setupCategorySpinner()
+        observeScans()
+    }
+
+    private fun setupCategorySpinner() {
+        val categories = listOf("Все") + com.example.honeywellfood.domain.model.ProductCategory.allCategories
+
+        val adapter = object : ArrayAdapter<String>(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            categories
+        ) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent)
+                val textView = view.findViewById<TextView>(android.R.id.text1)
+                textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_white))
+                return view
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent)
+                val textView = view.findViewById<TextView>(android.R.id.text1)
+                textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_white))
+                textView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_dark))
+
+                val density = resources.displayMetrics.density
+                val padding = (12 * density).toInt()
+                textView.setPadding(padding, padding, padding, padding)
+
+                return view
+            }
+        }
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerCategoryFilter.adapter = adapter
+        spinnerCategoryFilter.setPopupBackgroundResource(R.color.background_dark)
+
+        spinnerCategoryFilter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selected = categories[position]
+                selectedCategory = if (selected == "Все") null else selected
+                observeScans()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                selectedCategory = null
+                observeScans()
+            }
+        }
+    }
+
+    private fun observeScans() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.scanHistory.collect { scans ->
-                adapter.submitList(scans)
+                val filteredScans = if (selectedCategory != null) {
+                    scans.filter { it.category == selectedCategory }
+                } else {
+                    scans
+                }
+                adapter.submitList(filteredScans)
             }
         }
     }
