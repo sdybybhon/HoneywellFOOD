@@ -10,3 +10,5 @@ interface FoodFactsApi {
         @Path("barcode") barcode: String
     ): FoodFactsResponse
 }
+
+//В будущем продумать несколько запросов к api с получением разных данных

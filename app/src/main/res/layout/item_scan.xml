@@ -49,6 +49,16 @@
         android:layout_marginBottom="4dp" />
 
     <TextView
+        android:id="@+id/tvCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/light_purple"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp"
+        android:visibility="gone" />
+
+    <TextView
         android:id="@+id/tvExpiryDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

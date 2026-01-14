@@ -207,14 +207,31 @@ class MainFragment : Fragment() {
 
         productDialog = ProductInfoDialogFragment.newInstance(barcode, productName).apply {
             setListener(object : ProductInfoDialogFragment.OnDialogActionListener {
-                override fun onProductSaved(productName: String, expiryDate: Long, barcode: String) {
-                    viewModel.addProductWithInfo(barcode, productName, expiryDate, symbology)
+                override fun onProductSaved(
+                    productName: String,
+                    category: String?,
+                    expiryDate: Long,
+                    barcode: String
+                ) {
+                    viewModel.addProductWithInfo(barcode, productName, category, expiryDate, symbology)
+
+                    val remainingDays = calculateRemainingDays(expiryDate)
+                    val remainingText = when {
+                        remainingDays < 0 -> " (просрочено)"
+                        remainingDays == 0 -> " (истекает сегодня)"
+                        remainingDays == 1 -> " (ост. 1 д.)"
+                        remainingDays <= 30 -> " (ост. $remainingDays д.)"
+                        else -> ""
+                    }
 
                     tvScanResult.text = buildString {
                         append("Продукт сохранен!\n\n")
                         append("Название: $productName\n")
+                        if (category != null) {
+                            append("Категория: $category\n")
+                        }
                         append("Штрихкод: $barcode\n")
-                        append("Годен до: ${formatDate(expiryDate)}\n")
+                        append("Годен до: ${formatDate(expiryDate)}$remainingText\n")
                         append("Тип: $symbology")
                     }
 
@@ -234,32 +251,6 @@ class MainFragment : Fragment() {
                     }
                 }
             })
-        }
-        fun onProductSaved(productName: String, expiryDate: Long, barcode: String) {
-            viewModel.addProductWithInfo(barcode, productName, expiryDate, symbology)
-
-            val remainingDays = calculateRemainingDays(expiryDate)
-            val remainingText = when {
-                remainingDays < 0 -> " (просрочено)"
-                remainingDays == 0 -> " (истекает сегодня)"
-                remainingDays == 1 -> " (ост. 1 д.)"
-                remainingDays <= 30 -> " (ост. $remainingDays д.)"
-                else -> ""
-            }
-
-            tvScanResult.text = buildString {
-                append("Продукт сохранен!\n\n")
-                append("Название: $productName\n")
-                append("Штрихкод: $barcode\n")
-                append("Годен до: ${formatDate(expiryDate)}$remainingText\n")
-                append("Тип: $symbology")
-            }
-
-            Toast.makeText(
-                requireContext(),
-                "Продукт добавлен в историю",
-                Toast.LENGTH_SHORT
-            ).show()
         }
 
         productDialog?.show(childFragmentManager, "ProductInfoDialog")

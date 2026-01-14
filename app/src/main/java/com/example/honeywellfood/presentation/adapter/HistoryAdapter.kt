@@ -1,6 +1,7 @@
 package com.example.honeywellfood.presentation.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -38,6 +39,13 @@ class HistoryAdapter(
         fun bind(item: ScanItem) {
             binding.tvProductName.text = item.productName ?: "Неизвестный продукт"
             binding.tvBarcode.text = "Штрихкод: ${item.barcode}"
+
+            if (item.category != null) {
+                binding.tvCategory.visibility = View.VISIBLE
+                binding.tvCategory.text = "Категория: ${item.category}"
+            } else {
+                binding.tvCategory.visibility = View.GONE
+            }
 
             item.expiryDate?.let {
                 val dateStr = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())

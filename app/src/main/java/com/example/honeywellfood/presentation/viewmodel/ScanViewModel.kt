@@ -55,20 +55,6 @@ class ScanViewModel @Inject constructor(
         }
     }
 
-    fun addProductWithInfo(barcode: String, productName: String, expiryDate: Long, symbology: String) {
-        viewModelScope.launch {
-            repository.addScan(
-                ScanItem(
-                    barcode = barcode,
-                    productName = productName,
-                    expiryDate = expiryDate,
-                    symbology = symbology
-                )
-            )
-            _showProductDialog.postValue(null)
-        }
-    }
-
     fun clearHistory() {
         viewModelScope.launch {
             repository.clearHistory()
@@ -81,9 +67,24 @@ class ScanViewModel @Inject constructor(
         }
     }
 
-    fun deleteScanById(id: Int) {
+    fun addProductWithInfo(
+        barcode: String,
+        productName: String,
+        category: String?,
+        expiryDate: Long,
+        symbology: String
+    ) {
         viewModelScope.launch {
-            repository.deleteScanById(id)
+            repository.addScan(
+                ScanItem(
+                    barcode = barcode,
+                    productName = productName,
+                    category = category,
+                    expiryDate = expiryDate,
+                    symbology = symbology
+                )
+            )
+            _showProductDialog.postValue(null)
         }
     }
 }

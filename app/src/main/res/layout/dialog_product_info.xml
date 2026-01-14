@@ -40,6 +40,35 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Добавляем Spinner для категории -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="16dp"
+        android:padding="12dp"
+        android:background="@color/background_medium">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Категория продукта"
+            android:textSize="14sp"
+            android:textColor="@color/text_gray"
+            android:layout_marginBottom="8dp" />
+
+        <Spinner
+            android:id="@+id/spinnerCategory"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/background_light"
+            android:popupBackground="@color/background_dark"
+            android:textColor="@color/text_white"
+            style="@style/SpinnerStyle" />
+
+    </LinearLayout>
+
+    <!-- Существующий блок с датой -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

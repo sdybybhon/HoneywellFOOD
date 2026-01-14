@@ -11,6 +11,7 @@ data class ScanItem(
     val id: Int = 0,
     val barcode: String,
     val productName: String? = null,
+    val category: String? = null,
     val expiryDate: Long? = null,
     val symbology: String,
     val timestamp: Long = Date().time

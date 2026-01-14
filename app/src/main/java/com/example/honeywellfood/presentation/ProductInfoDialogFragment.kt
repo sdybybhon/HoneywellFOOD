@@ -7,12 +7,18 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.example.honeywellfood.R
 import com.example.honeywellfood.databinding.DialogProductInfoBinding
+import com.example.honeywellfood.domain.model.ProductCategory
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -21,7 +27,7 @@ import java.util.regex.Pattern
 class ProductInfoDialogFragment : DialogFragment() {
 
     interface OnDialogActionListener {
-        fun onProductSaved(productName: String, expiryDate: Long, barcode: String)
+        fun onProductSaved(productName: String, category: String?, expiryDate: Long, barcode: String)
         fun onDialogCanceled()
     }
 
@@ -44,6 +50,39 @@ class ProductInfoDialogFragment : DialogFragment() {
         val productName = arguments?.getString("PRODUCT_NAME") ?: ""
 
         binding.etProductName.setText(productName)
+
+        val categories = listOf("Не выбрано") + ProductCategory.allCategories
+
+        val adapter = object : ArrayAdapter<String>(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            categories
+        ) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent)
+                val textView = view.findViewById<TextView>(android.R.id.text1)
+                textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_white))
+                return view
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getDropDownView(position, convertView, parent)
+                val textView = view.findViewById<TextView>(android.R.id.text1)
+                textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_white))
+                textView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.background_dark))
+
+                val density = resources.displayMetrics.density
+                val padding = (12 * density).toInt()
+                textView.setPadding(padding, padding, padding, padding)
+
+                return view
+            }
+        }
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerCategory.adapter = adapter
+
+        binding.spinnerCategory.setPopupBackgroundResource(R.color.background_dark)
 
         binding.etProductName.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -194,6 +233,10 @@ class ProductInfoDialogFragment : DialogFragment() {
 
     private fun saveProduct(barcode: String) {
         val productNameInput = binding.etProductName.text.toString().trim()
+
+        val selectedCategory = binding.spinnerCategory.selectedItem as? String
+        val category = if (selectedCategory != "Не выбрано") selectedCategory else null
+
         val dateInput = binding.etExpiryDate.text.toString().trim()
 
         if (productNameInput.isBlank()) {
@@ -234,7 +277,7 @@ class ProductInfoDialogFragment : DialogFragment() {
         }
 
         wasSaved = true
-        listener?.onProductSaved(productNameInput, expiryDate, barcode)
+        listener?.onProductSaved(productNameInput, category, expiryDate, barcode)
         dismiss()
     }
 
