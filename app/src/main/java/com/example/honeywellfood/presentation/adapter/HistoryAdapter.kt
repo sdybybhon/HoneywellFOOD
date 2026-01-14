@@ -30,10 +30,20 @@ class HistoryAdapter : ListAdapter<ScanItem, HistoryAdapter.ScanViewHolder>(Diff
             binding.tvBarcode.text = "Штрихкод: ${item.barcode}"
 
             item.expiryDate?.let {
-                binding.tvExpiryDate.text = SimpleDateFormat("Годен до: dd.MM.yyyy", Locale.getDefault())
+                val dateStr = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
                     .format(Date(it))
-            } ?: run {
-                binding.tvExpiryDate.text = "Срок годности не указан"
+
+                val remainingText = item.remainingDays?.let { days ->
+                    when {
+                        days < 0 -> " (просрочено)"
+                        days == 0 -> " (истекает сегодня)"
+                        days == 1 -> " (ост. 1 д.)"
+                        days <= 30 -> " (ост. $days д.)"
+                        else -> ""
+                    }
+                } ?: ""
+
+                binding.tvExpiryDate.text = "Годен до: $dateStr$remainingText"
             }
 
             binding.tvDate.text = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())

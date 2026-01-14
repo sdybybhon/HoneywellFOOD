@@ -235,8 +235,39 @@ class MainFragment : Fragment() {
                 }
             })
         }
+        fun onProductSaved(productName: String, expiryDate: Long, barcode: String) {
+            viewModel.addProductWithInfo(barcode, productName, expiryDate, symbology)
+
+            val remainingDays = calculateRemainingDays(expiryDate)
+            val remainingText = when {
+                remainingDays < 0 -> " (просрочено)"
+                remainingDays == 0 -> " (истекает сегодня)"
+                remainingDays == 1 -> " (ост. 1 д.)"
+                remainingDays <= 30 -> " (ост. $remainingDays д.)"
+                else -> ""
+            }
+
+            tvScanResult.text = buildString {
+                append("Продукт сохранен!\n\n")
+                append("Название: $productName\n")
+                append("Штрихкод: $barcode\n")
+                append("Годен до: ${formatDate(expiryDate)}$remainingText\n")
+                append("Тип: $symbology")
+            }
+
+            Toast.makeText(
+                requireContext(),
+                "Продукт добавлен в историю",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
 
         productDialog?.show(childFragmentManager, "ProductInfoDialog")
+    }
+
+    private fun calculateRemainingDays(expiryDate: Long): Int {
+        val diff = expiryDate - Date().time
+        return (diff / (1000 * 60 * 60 * 24)).toInt()
     }
 
     private fun formatDate(timestamp: Long): String {
