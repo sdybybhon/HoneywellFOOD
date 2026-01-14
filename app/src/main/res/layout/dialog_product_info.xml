@@ -57,24 +57,33 @@
             android:textColor="@color/text_gray"
             android:layout_marginBottom="8dp" />
 
-        <Button
-            android:id="@+id/btnPickDate"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilExpiryDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Выбрать дату"
-            android:backgroundTint="@color/accent_black"
-            android:textColor="@color/text_white"
-            android:layout_marginBottom="12dp" />
+            app:hintTextColor="@color/light_purple"
+            app:boxStrokeColor="@color/light_purple"
+            app:startIconDrawable="@drawable/ic_calendar"
+            app:startIconTint="@color/light_purple"
+            app:endIconMode="custom"
+            app:endIconDrawable="@drawable/ic_clear"
+            app:endIconTint="@color/light_purple"
+            app:errorEnabled="true"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <TextView
-            android:id="@+id/tvSelectedDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Дата не выбрана"
-            android:textSize="16sp"
-            android:textColor="@color/light_purple"
-            android:gravity="center"
-            android:padding="8dp" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etExpiryDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="дд.мм.гггг"
+                android:textColor="@color/text_white"
+                android:textSize="16sp"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
+                android:inputType="date"
+                android:maxLength="10" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
