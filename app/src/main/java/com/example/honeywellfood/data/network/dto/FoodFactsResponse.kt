@@ -1,5 +1,6 @@
 package com.example.honeywellfood.data.network.dto
 
+import com.example.honeywellfood.domain.model.Product
 import com.google.gson.annotations.SerializedName
 
 data class FoodFactsResponse(
@@ -11,18 +12,4 @@ data class FoodFactsResponse(
 
     @SerializedName("code")
     val code: String? = null
-)
-
-data class Product(
-    @SerializedName("product_name")
-    val productName: String? = null,
-
-    @SerializedName("product_name_ru")
-    val productNameRu: String? = null,
-
-    @SerializedName("generic_name")
-    val genericName: String? = null,
-
-    @SerializedName("brands")
-    val brands: String? = null
 )

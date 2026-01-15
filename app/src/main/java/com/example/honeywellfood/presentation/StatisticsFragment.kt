@@ -32,6 +32,7 @@ class StatisticsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val expiryColors = intArrayOf(
+        //временная конструкция
         Color.parseColor("#FF6B6B"), // красный(просроченные)
         Color.parseColor("#FFA726"), // оранжевый(до 7 дней)
         Color.parseColor("#42A5F5"), // синий(до 30 дней)
@@ -189,6 +190,7 @@ class StatisticsFragment : Fragment() {
 
         val categoryColors = mutableListOf<Int>()
         val predefinedColors = listOf(
+            //временная конструкция
             Color.parseColor("#FF6B6B"), // красный
             Color.parseColor("#4ECDC4"), // бирюзовый
             Color.parseColor("#FFD166"), // желтый
@@ -212,8 +214,8 @@ class StatisticsFragment : Fragment() {
             setDrawValues(true)
             yValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE
             xValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE
-            valueLinePart1Length = 0.0f
-            valueLinePart2Length = 0.0f
+            valueLinePart1Length = 0.0f //подобрать подходящее значение
+            valueLinePart2Length = 0.0f //подобрать подходящее значение
             valueLineColor = Color.WHITE
             sliceSpace = 2f
         }

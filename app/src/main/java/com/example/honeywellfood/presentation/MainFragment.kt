@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.lifecycle.Observer
 import com.example.honeywellfood.R
+import com.example.honeywellfood.data.constants.ScannerConstants
 import com.example.honeywellfood.presentation.viewmodel.ScanViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -39,23 +40,28 @@ class MainFragment : Fragment() {
 
                 data = data.trim()
 
-                if (codeId == "d" || codeId == "c") {
+                if (codeId == ScannerConstants.Scanner.BARCODE_TYPE_EAN13 ||
+                    codeId == ScannerConstants.Scanner.BARCODE_TYPE_UPCA) {
                     data = data.replace("[^\\d]".toRegex(), "")
 
-                    if (codeId == "d" && data.length == 12) {
-                        Log.d("MainFragment", "EAN13 with 12 digits detected, calculating checksum")
+                    if (codeId == ScannerConstants.Scanner.BARCODE_TYPE_EAN13 &&
+                        data.length == ScannerConstants.Scanner.EAN13_LENGTH_WITHOUT_CHECKSUM) {
+                        Log.d(ScannerConstants.LogTags.MAIN_FRAGMENT,
+                            "EAN13 with 12 digits detected, calculating checksum")
                         val checksum = calculateEAN13Checksum(data)
                         data += checksum
-                        Log.d("MainFragment", "Added checksum digit: $checksum, full barcode: $data")
+                        Log.d(ScannerConstants.LogTags.MAIN_FRAGMENT,
+                            "Added checksum digit: $checksum, full barcode: $data")
                     }
                 }
 
-                if (data.length < 8) {
+                if (data.length < ScannerConstants.Scanner.MIN_BARCODE_LENGTH) {
                     tvScanResult.text = "Ошибка: слишком короткий штрихкод: '$data'"
                     return
                 }
 
-                Log.d("MainFragment", "Processed barcode: '$data' (length: ${data.length})")
+                Log.d(ScannerConstants.LogTags.MAIN_FRAGMENT,
+                    "Processed barcode: '$data' (length: ${data.length})")
 
                 val symbology = getSymbologyName(codeId)
 
@@ -74,14 +80,14 @@ class MainFragment : Fragment() {
                 if (viewModel.isScanning.value == true) {
                     btnToggleScan.postDelayed({
                         startScanning()
-                    }, 1500)
+                    }, ScannerConstants.Time.SCAN_RESTART_DELAY_MS)
                 }
             }
         }
     }
 
     private fun calculateEAN13Checksum(barcode12: String): Char {
-        if (barcode12.length != 12) {
+        if (barcode12.length != ScannerConstants.Scanner.EAN13_LENGTH_WITHOUT_CHECKSUM) {
             throw IllegalArgumentException("EAN13 barcode must be 12 digits without checksum")
         }
 
@@ -167,47 +173,47 @@ class MainFragment : Fragment() {
     }
 
     private fun claimScanner() {
-        val intent = Intent(ACTION_CLAIM_SCANNER).apply {
-            putExtra(EXTRA_SCANNER, "dcs.scanner.imager")
-            putExtra(EXTRA_PROFILE, "DEFAULT")
+        val intent = Intent(ScannerConstants.Scanner.ACTION_CLAIM_SCANNER).apply {
+            putExtra(ScannerConstants.Scanner.EXTRA_SCANNER, ScannerConstants.Scanner.SCANNER_TYPE)
+            putExtra(ScannerConstants.Scanner.EXTRA_PROFILE, ScannerConstants.Scanner.PROFILE_NAME)
             val bundle = Bundle().apply {
                 putBoolean("DPR_DATA_INTENT", true)
                 putString("DPR_DATA_INTENT_ACTION", "com.example.honeywellfood.ACTION_BARCODE_DATA")
             }
-            putExtra(EXTRA_PROPERTIES, bundle)
+            putExtra(ScannerConstants.Scanner.EXTRA_PROPERTIES, bundle)
         }
         requireContext().sendBroadcast(intent)
     }
 
     private fun releaseScanner() {
-        val intent = Intent(ACTION_RELEASE_SCANNER)
+        val intent = Intent(ScannerConstants.Scanner.ACTION_RELEASE_SCANNER)
         requireContext().sendBroadcast(intent)
     }
 
     private fun startScanning() {
-        val intent = Intent(ACTION_CONTROL_SCANNER).apply {
-            putExtra(EXTRA_SCAN, true)
+        val intent = Intent(ScannerConstants.Scanner.ACTION_CONTROL_SCANNER).apply {
+            putExtra(ScannerConstants.Scanner.EXTRA_SCAN, true)
         }
         requireContext().sendBroadcast(intent)
     }
 
     private fun stopScanning() {
-        val intent = Intent(ACTION_CONTROL_SCANNER).apply {
-            putExtra(EXTRA_SCAN, false)
+        val intent = Intent(ScannerConstants.Scanner.ACTION_CONTROL_SCANNER).apply {
+            putExtra(ScannerConstants.Scanner.EXTRA_SCAN, false)
         }
         requireContext().sendBroadcast(intent)
     }
 
     private fun getSymbologyName(codeId: String): String {
         return when (codeId) {
-            "s" -> "QR Code"
-            "j" -> "Code 128"
-            "d" -> "EAN13"
-            "c" -> "UPCA"
-            "b" -> "Code 39"
-            "r" -> "PDF417"
-            "w" -> "DataMatrix"
-            "z" -> "Aztec"
+            ScannerConstants.Scanner.BARCODE_TYPE_QR -> "QR Code"
+            ScannerConstants.Scanner.BARCODE_TYPE_CODE128 -> "Code 128"
+            ScannerConstants.Scanner.BARCODE_TYPE_EAN13 -> "EAN13"
+            ScannerConstants.Scanner.BARCODE_TYPE_UPCA -> "UPCA"
+            ScannerConstants.Scanner.BARCODE_TYPE_CODE39 -> "Code 39"
+            ScannerConstants.Scanner.BARCODE_TYPE_PDF417 -> "PDF417"
+            ScannerConstants.Scanner.BARCODE_TYPE_DATAMATRIX -> "DataMatrix"
+            ScannerConstants.Scanner.BARCODE_TYPE_AZTEC -> "Aztec"
             else -> "Unknown ($codeId)"
         }
     }
@@ -268,21 +274,11 @@ class MainFragment : Fragment() {
 
     private fun calculateRemainingDays(expiryDate: Long): Int {
         val diff = expiryDate - Date().time
-        return (diff / (1000 * 60 * 60 * 24)).toInt()
+        return (diff / ScannerConstants.Time.MILLISECONDS_PER_DAY).toInt()
     }
 
     private fun formatDate(timestamp: Long): String {
-        val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+        val sdf = SimpleDateFormat(ScannerConstants.UI.DATE_FORMAT, Locale.getDefault())
         return sdf.format(Date(timestamp))
-    }
-
-    companion object {
-        private const val ACTION_CLAIM_SCANNER = "com.honeywell.aidc.action.ACTION_CLAIM_SCANNER"
-        private const val ACTION_RELEASE_SCANNER = "com.honeywell.aidc.action.ACTION_RELEASE_SCANNER"
-        private const val ACTION_CONTROL_SCANNER = "com.honeywell.aidc.action.ACTION_CONTROL_SCANNER"
-        private const val EXTRA_SCANNER = "com.honeywell.aidc.extra.EXTRA_SCANNER"
-        private const val EXTRA_PROFILE = "com.honeywell.aidc.extra.EXTRA_PROFILE"
-        private const val EXTRA_PROPERTIES = "com.honeywell.aidc.extra.EXTRA_PROPERTIES"
-        private const val EXTRA_SCAN = "com.honeywell.aidc.extra.EXTRA_SCAN"
     }
 }
