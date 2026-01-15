@@ -26,6 +26,8 @@ class MainFragment : Fragment() {
     private lateinit var btnToggleScan: Button
     private lateinit var btnHistory: Button
     private lateinit var tvScanResult: TextView
+
+    private lateinit var btnStatistics: Button
     private var productDialog: ProductInfoDialogFragment? = null
     private var lastScannedCodeId: String = ""
 
@@ -103,6 +105,7 @@ class MainFragment : Fragment() {
 
         btnToggleScan = view.findViewById(R.id.btnToggleScan)
         btnHistory = view.findViewById(R.id.btnHistory)
+        btnStatistics = view.findViewById(R.id.btnStatistics)
         tvScanResult = view.findViewById(R.id.tvScanResult)
 
         return view
@@ -135,6 +138,13 @@ class MainFragment : Fragment() {
         btnHistory.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.container, HistoryFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        btnStatistics.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.container, StatisticsFragment())
                 .addToBackStack(null)
                 .commit()
         }

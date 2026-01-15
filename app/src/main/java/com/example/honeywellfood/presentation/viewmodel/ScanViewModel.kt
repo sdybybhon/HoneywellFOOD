@@ -3,7 +3,9 @@ package com.example.honeywellfood.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.honeywellfood.data.repository.ScanRepository
+import com.example.honeywellfood.domain.model.ExpiryDistribution
 import com.example.honeywellfood.domain.model.ScanItem
+import com.example.honeywellfood.domain.model.StatisticsData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -24,6 +26,16 @@ class ScanViewModel @Inject constructor(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
+        )
+
+    val statistics: Flow<StatisticsData> = repository.getStatisticsFlow()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = StatisticsData(
+                ExpiryDistribution(0, 0, 0, 0),
+                emptyMap()
+            )
         )
 
     fun toggleScanning() {
